@@ -12,6 +12,7 @@ The rules:
 const SIZE = 42;
 const FEW = 2;
 const MANY = 3;
+const PLENTY = 3;
 
 const LIVE = '@';
 const DEAD = ' ';
@@ -19,9 +20,32 @@ const DEAD = ' ';
 const isLive = c => c === LIVE;
 const isUnderPopulated = n => n < FEW;
 const isOverPopulated = n => n > MANY;
-const canReproduce = n => n === MANY;
+const canReproduce = n => n === PLENTY;
 const willContinue = n => !(isUnderPopulated(n)) && !(isOverPopulated(n));
 
 const newRow = () => Array(SIZE).fill(DEAD);
 const newBoard = () => newRow().map(newRow);
+
+const cloneRow = r => r.slice();
+const cloneBoard = b => b.map(cloneRow);
+
+const isWithinBounds = v => v >= 0 && v < (SIZE - 1);
+const areWithinBounds = (x, y) => isWithinBounds(x) && isWithinBounds(y);
+
+const neighborCoordinates = (x, y) => [
+  [x-1, y-1], [x, y-1], [x+1, y-1],
+  [x-1, y],             [x+1, y],
+  [x-1, y+1], [x, y+1], [x+1, y+1],  
+].filter(xyArr => areWithinBounds(...xyArr));
+
+// console.log(neighborCoordinates(0, 0));
+
+const coordsForRow = (r, x=0) => r.map((v, y) => [x, y]);
+const coordsForBoard = b => b.map(coordsForRow);
+// console.log(coordsForBoard(newBoard()))
+
+const neighborCoordinatesForRow = (r, x=0) => coordsForRow(r, x).map(xyArr => neighborCoordinates(...xyArr));
+const neighborCoordinatesForBoard = b => b.map(neighborCoordinatesForRow);
+
+console.log(neighborCoordinatesForBoard(newBoard()));
 
