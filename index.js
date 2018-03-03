@@ -47,5 +47,17 @@ const coordsForBoard = b => b.map(coordsForRow);
 const neighborCoordinatesForRow = (r, x=0) => coordsForRow(r, x).map(xyArr => neighborCoordinates(...xyArr));
 const neighborCoordinatesForBoard = b => b.map(neighborCoordinatesForRow);
 
-console.log(neighborCoordinatesForBoard(newBoard()));
+// console.log(neighborCoordinatesForBoard(newBoard()));
 
+const cellAtCoorinate = (board, x, y) => board[x][y];
+const liveAtCoord = (board, x, y) => isLive(cellAtCoorinate);
+
+const neighborCellsForCoordinateArray = (board, arrayOfNeighborCoors) => {
+  return arrayOfNeighborCoors.map(neighborCoordsForCell => {
+    return neighborCoordsForCell.map(coordsArray => {
+      return coordsArray.map(xyArray => cellAtCoorinate(board, ...xyArray))
+    })
+  })
+};
+
+// console.log(neighborCellsForCoordinateArray(newBoard(), neighborCoordinatesForBoard(newBoard())))
