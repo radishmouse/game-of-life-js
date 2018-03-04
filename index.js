@@ -1,20 +1,22 @@
 
+const SIZE = 42; // Size of (square) board
+const INTERVAL = 200; // Frequency of screen updates
+const THRESHOLD = 33; // % chance a cell will be seeded with life
 
+// Printable representations of cells
+const LIVE = '@';
+const DEAD = ' ';
+
+
+// ---------------------------------------------------------------------
+// The rules
 /*
-The rules:
 -  Any live cell with fewer than two live neighbours dies, as if caused by underpopulation.
 -  Any live cell with two or three live neighbours lives on to the next generation.
 -  Any live cell with more than three live neighbours dies, as if by overpopulation.
 -  Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
   
 */
-
-
-
-const SIZE = 42;
-const INTERVAL = 333;
-const LIVE = '@';
-const DEAD = ' ';
 
 const FEW = 2;
 const MANY = 3;
@@ -26,6 +28,8 @@ const isOverPopulated = n => n > MANY;
 const canReproduce = n => n === PLENTY;
 const willContinue = n => !(isUnderPopulated(n)) && !(isOverPopulated(n));
 
+// ---------------------------------------------------------------------
+
 const getRandomInt = (max, min=0) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -36,16 +40,10 @@ const newRow = () => Array(SIZE).fill(DEAD);
 const newBoard = shouldSeed => {
   let board = newRow().map(newRow);
   if (shouldSeed) {
-    board = board.map(row => row.map(c => {
-      return getRandomInt(100) < 50 ? LIVE : DEAD
-    }))
+    board = board.map(row => row.map(_ => getRandomInt(100) < THRESHOLD ? LIVE : DEAD))
   }
-
   return board;
 }
-
-const cloneRow = r => r.slice();
-const cloneBoard = b => b.map(cloneRow);
 
 const isWithinBounds = v => v >= 0 && v < SIZE;
 const areWithinBounds = (x, y) => isWithinBounds(x) && isWithinBounds(y);
@@ -55,10 +53,9 @@ const neighborCoordinates = (x, y) => [
   [x-1, y],             [x+1, y],
   [x-1, y+1], [x, y+1], [x+1, y+1],  
 ].filter(xyArr => areWithinBounds(...xyArr));
-
 // console.log(neighborCoordinates(0, 0));
 
-const coordsForRow = (r, x=0) => r.map((v, y) => [x, y]);
+const coordsForRow = (r, x=0) => r.map((_, y) => [x, y]);
 const coordsForBoard = b => b.map(coordsForRow);
 // console.log(coordsForBoard(newBoard()))
 
@@ -67,7 +64,6 @@ const neighborCoordinatesForBoard = b => b.map(neighborCoordinatesForRow);
 // console.log(neighborCoordinatesForBoard(newBoard()));
 
 const cellAtCoorinate = (board, x, y) => board[x][y];
-const liveAtCoord = (board, x, y) => isLive(cellAtCoorinate(board, x, y));
 
 const neighborCellsForCoordinateArray = (board, arrayOfNeighborCoors) => {
   return arrayOfNeighborCoors.map(neighborCoordsForCell => {
@@ -83,7 +79,7 @@ const boardAsNumberOfNeighbors = (board, arrayOfNeighborCoords) => {
     return neighborCellsForRow.map(neighborCellsForCell => {
       return neighborCellsForCell
         .filter(isLive)
-        .reduce((total, c) => total + 1, 0)
+        .reduce((total, _) => total + 1, 0)
     })
   })
 }
@@ -107,27 +103,34 @@ const numberToLiveDead = (number, cell) => {
 const numberRowAsLiveDeadCells = (rowOfNumbers, rowOfCells) => rowOfNumbers.map((n, i) => numberToLiveDead(n, rowOfCells[i]));
 const numberBoardAsLiveDeadCells = (boardOfNumbers, boardOfCells) => boardOfNumbers.map((r, i) => numberRowAsLiveDeadCells(r, boardOfCells[i]));
 
-const printRow = r => r.join(' ');
-const printBoard = b => console.log(b.map(printRow).join('\n'));
+const printRow = r => r.join(' ');  // A little horizontal space looks better
+const printBoard = b => {
+  const boardAsString = b.map(printRow).join('\n');
+  console.log(boardAsString);
+  return boardAsString;
+};
 
-console.clear();
-
-const mainLoop = (board, coords) => {
-  return 
-}
-
-const main = (board) => {
+const main = board => {
   const coords = neighborCoordinatesForBoard(board);
   let neighbors;
   let generation = 0;
-  setInterval(() => {
+  let prevMinusOne = '';
+  let prev = '';
+  let curr = '';
+  let tick = setInterval(() => {
     neighbors = boardAsNumberOfNeighbors(board, coords);
     board = numberBoardAsLiveDeadCells(neighbors, board);
     console.clear();
-    printBoard(board);
+    prevMinusOne = prev.slice();
+    prev = curr.slice();
+    curr = printBoard(board);
     console.log(`Generation ${generation}`);
     generation++;
-  }, INTERVAL)
+
+    if (curr === prev || curr === prevMinusOne) {
+      clearInterval(tick);
+    }
+  }, INTERVAL);
 }
 
 main(newBoard(true));
