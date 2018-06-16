@@ -3,11 +3,27 @@
   <head>
     <meta charset="UTF-8"/>
     <title>Document</title>
+    <style>
+      html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      }
+      body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      }
+      canvas {
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      }
+    </style>
   </head>
   <body>
     <canvas id="life"
-      width="500"
-            height="500">
+            width="420"
+            height="420">
       Loading...
     </canvas>
     <script src="life.js"></script>
