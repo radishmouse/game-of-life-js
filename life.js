@@ -4,8 +4,8 @@ const life = (() => {
   const THRESHOLD = 33; // % chance a cell will be seeded with life
 
   // Printable representations of cells
-  const LIVE = '@';
-  const DEAD = ' ';
+  let LIVE = '@';
+  let DEAD = ' ';
 
   // ---------------------------------------------------------------------
   // The rules
@@ -154,6 +154,19 @@ const life = (() => {
       main(newBoard(true)); // Start game with new board, seeded with some live cells.      
     }
   } else {
-    return () => main(newBoard(true));
+    LIVE = true;
+    DEAD = false;
+    
+    return {
+      newBoard,
+      neighborCoordinatesForBoard,
+      boardAsNumberOfNeighbors,
+      isLive,
+      isUnderPopulated,
+      isOverPopulated,
+      willContinue,
+      canReproduce,
+      SIZE
+    }
   }
 })();
