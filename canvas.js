@@ -20,13 +20,15 @@ const GRID_COUNT = SIZE;
 const CELL_SIZE = width/GRID_COUNT;
 
 const COLORS = {
-  live: 'rgba(200, 0, 0, 1)',
-  dead: 'rgb(255, 255, 255)'
+  // live: 'rgba(200, 0, 0, 1)',
+  live: 'rgba(255, 169, 40, 0.75)',
+  dead: 'rgba(255, 255, 255, 0.5)'
 };
 
 // Uses function declaration for binding `this`
 // to the canvas context.
 function _renderBox (isLive, xGrid, yGrid) {
+  this.lineWidth = 0.8;
   this.strokeStyle = isLive ? COLORS.live : COLORS.dead;
   this.strokeRect(xGrid*CELL_SIZE,
                 yGrid*CELL_SIZE,
