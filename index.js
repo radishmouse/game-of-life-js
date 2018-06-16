@@ -1,6 +1,6 @@
 
 const SIZE = 42; // Size of (square) board
-const INTERVAL = 20; // Frequency of screen updates
+const INTERVAL = 300; // Frequency of screen updates
 const THRESHOLD = 33; // % chance a cell will be seeded with life
 
 // Printable representations of cells
