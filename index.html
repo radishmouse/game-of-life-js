@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8"/>
     <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <style>
       html, body {
       height: 100%;
@@ -12,8 +13,10 @@
       }
       body {
       display: flex;
-      justify-content: center;
+      justify-content: space-around;
       align-items: center;
+      flex-direction: column;
+      
       }
       canvas {
       border: 1px solid rgba(0, 0, 0, 0.3);
@@ -26,6 +29,12 @@
             height="420">
       Loading...
     </canvas>
+    <div>
+      <button data-play-pause>
+        <i class="fa fa-play"></i>        
+      </button>
+
+    </div>
     <script src="life.js"></script>
     <script src="canvas.js"></script>
   </body>

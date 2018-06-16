@@ -12,6 +12,11 @@ const {
   SIZE
 } = life;
 
+const playPause = document.querySelector('[data-play-pause]');
+const startClass = 'fa-play';
+const pauseClass = 'fa-pause';
+
+
 const canvas = document.querySelector('#life');
 const ctx = canvas.getContext('2d');
 const {height, width} = canvas;
@@ -75,23 +80,34 @@ let rafID;
 let board = newBoard(true);
 const coords = neighborCoordinatesForBoard(board);
 let neighbors;         // The game board as number of live neighbors per cell.
-
+let isRunning = false;
 const main = () => {
-  // Given a board, calculate all the valid neighbor coordinates.
-  neighbors = boardAsNumberOfNeighbors(board, coords);  // Calculate live neighbor counts.
-  board = numberBoardAsLiveDeadCells(neighbors, board); // Calculate next state of board.
-  renderBoard(board);
-  // console.log(board);
-  
-  
-  // if (y == 42) {
-    // cancelAnimationFrame(rafID);
-  // } else {
-  setTimeout(() => {
-    rafID = requestAnimationFrame(main);    
-  }, 100);
+
+  if (isRunning) {
+    // Given a board, calculate all the valid neighbor coordinates.
+    neighbors = boardAsNumberOfNeighbors(board, coords);  // Calculate live neighbor counts.
+    board = numberBoardAsLiveDeadCells(neighbors, board); // Calculate next state of board.
+    renderBoard(board);
+    
+    setTimeout(() => {
+      rafID = requestAnimationFrame(main);    
+    }, 100);    
+  }
 
   // }
 }
 
-rafID = requestAnimationFrame(main);
+const togglePlaying = () => {
+  if (isRunning) {
+    cancelAnimationFrame(rafID);
+    playPause.querySelector('i').classList.add(startClass);
+    playPause.querySelector('i').classList.remove(pauseClass);        
+  } else {
+    rafID = requestAnimationFrame(main);
+    playPause.querySelector('i').classList.remove(startClass);
+    playPause.querySelector('i').classList.add(pauseClass);        
+  }
+  isRunning = !isRunning;
+};
+
+playPause.addEventListener('click', togglePlaying);
