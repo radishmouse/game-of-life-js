@@ -13,6 +13,8 @@ const {
 } = life;
 
 const playPause = document.querySelector('[data-play-pause]');
+const reload = document.querySelector('[data-reload]');
+
 const startClass = 'fa-play';
 const pauseClass = 'fa-pause';
 
@@ -21,12 +23,13 @@ const canvas = document.querySelector('#life');
 const ctx = canvas.getContext('2d');
 const {height, width} = canvas;
 
+const UPDATE_FREQUENCY = 30;
 const GRID_COUNT = SIZE;
 const CELL_SIZE = width/GRID_COUNT;
 
 const COLORS = {
   // live: 'rgba(200, 0, 0, 1)',
-  live: 'rgba(255, 169, 40, 0.75)',
+  live: 'rgba(40, 169, 255, 0.75)',
   dead: 'rgba(255, 255, 255, 0.5)'
 };
 
@@ -44,7 +47,6 @@ function _renderBox (isLive, xGrid, yGrid) {
 //
 const liveAt = _renderBox.bind(ctx, true);
 const deadAt = _renderBox.bind(ctx, false);
-
 
 const numberToIsLive = (number, cell) => {
   if (isLive(cell)) {
@@ -91,10 +93,9 @@ const main = () => {
     
     setTimeout(() => {
       rafID = requestAnimationFrame(main);    
-    }, 100);    
+    }, UPDATE_FREQUENCY);    
   }
 
-  // }
 }
 
 const togglePlaying = () => {
@@ -110,4 +111,25 @@ const togglePlaying = () => {
   isRunning = !isRunning;
 };
 
+const reloadBoard = () => board = newBoard(true);
+
 playPause.addEventListener('click', togglePlaying);
+reload.addEventListener('click', reloadBoard);
+
+document.addEventListener('keydown', (e) => {
+  console.log(e.keyCode);
+  if (e.getModifierState('Control')) {
+    return;
+  }
+  switch (e.keyCode) {
+  case 32:
+  case 13:
+    e.preventDefault();
+    togglePlaying()
+    break;
+  case 82:
+    e.preventDefault();
+    reloadBoard();
+    break;
+  }
+})
